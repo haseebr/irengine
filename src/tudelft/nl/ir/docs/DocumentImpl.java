@@ -56,13 +56,28 @@ public class DocumentImpl implements Document {
 		}
 
 		m_DocLength++;
-
 	}
 
 	// add metadata
 
 	public void addMetaData(String field, Object object) {
 		m_Metadata.put(field, object);
+	}
+	
+	/**
+	 * @author Bas Wenneker, 05-05-2009
+	 */
+	public void processBody(){
+		if (m_Metadata.containsKey("BODY")) {
+			String body = (String) m_Metadata.get("BODY");
+			String[] tokens = body.split("\\s");
+			
+			for (int i = 0; i < tokens.length; i++) {
+				this.addTerm(tokens[i], i);
+			}
+			
+			m_DocLength = tokens.length;
+		}
 	}
 
 	// sets
@@ -149,8 +164,7 @@ public class DocumentImpl implements Document {
 	public List<Integer> getTermPositions(String term) {
 		if (this.m_Term_2_Position_Map.containsKey(term))
 			return this.m_Term_2_Position_Map.get(term);
-		else
-			return null;
+		else return null;
 	}
 
 	public Set<String> getTerms() {
