@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import tudelft.nl.ir.index.Posting;
 
-public Preprocessor {
+public interface Preprocessor {
 
 	HashMap<String,Posting> process(String content);
 	

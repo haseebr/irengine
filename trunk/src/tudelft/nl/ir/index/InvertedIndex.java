@@ -24,14 +24,10 @@ public class InvertedIndex implements Index {
 		Set<String> terms = document.getTerms();
 		String term;
 		
-		for (Iterator<String> i = terms.iterator(); i.hasNext();)
-		{
+		for (Iterator<String> i = terms.iterator(); i.hasNext();){
 			term = (String) i.next();
 			addTerm(term,document);
-		}
-	
-			
-		
+		}		
 	}
 
 	private void addTerm(String term, Document document) {

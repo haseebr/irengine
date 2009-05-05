@@ -5,11 +5,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import tudelft.nl.ir.docs.Document;
 import tudelft.nl.ir.docs.DocumentImpl;
 import tudelft.nl.ir.index.Index;
+import tudelft.nl.ir.index.Posting;
+import tudelft.nl.ir.preprocessing.Preprocessor;
 import tudelft.nl.ir.preprocessing.Stemmer;
 import tudelft.nl.ir.preprocessing.StopwordRemover;
 
@@ -20,6 +23,12 @@ public class DocImporterImpl implements DocImporter{
 	Index m_Index;
 
 	Preprocessor m_Preprocessor;
+
+	private HashMap<String, Posting> m_Preprocessors;
+
+	private Stemmer m_Stemmer;
+
+	private Object m_StopwordRemover;
 	
 	public DocImporterImpl()
 	{
@@ -62,7 +71,7 @@ public class DocImporterImpl implements DocImporter{
 				
 				
 			
-			if (this.m_StopwordRemover != null && !m_StopwordRemover.isStopword(term)) 
+			if (this.m_StopwordRemover != null && !((StopwordRemover) m_StopwordRemover).isStopword(term)) 
 				{
 					doc.addTerm(term, i+1);
 				}
