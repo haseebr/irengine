@@ -33,8 +33,6 @@ public class PostingWithPosition implements Posting{
 	}
 
 	public void setDocument(Document document) {
-		m_Document = document;
-		
-	}
-	
+		m_Document = document;		
+	}	
 }
