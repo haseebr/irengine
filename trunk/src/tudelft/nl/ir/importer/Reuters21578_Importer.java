@@ -14,20 +14,19 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 import tudelft.nl.ir.docs.DocumentImpl;
 import tudelft.nl.ir.index.Index;
-import tudelft.nl.ir.index.InvertedIndex;
 import tudelft.nl.ir.preprocessing.Preprocessor;
-import tudelft.nl.ir.preprocessing.Stemmer;
 import tudelft.nl.ir.preprocessing.StopwordRemover;
 
 public class Reuters21578_Importer implements DocImporter {
 
-	int m_docCount = 0;
-	Index m_Index;
-
-	public Reuters21578_Importer() {
-		m_Index = new InvertedIndex();
+	private int m_docCount = 0;
+	private Index m_Index;
+	private List<Preprocessor> m_Preprocessors;
+	
+	public Reuters21578_Importer(){
+		m_Preprocessors = new ArrayList<Preprocessor>();
 	}
-
+	
 	public void addDocumentFromFile(File file) {
 		DOMParser parser = new DOMParser();
 		try {
@@ -74,12 +73,14 @@ public class Reuters21578_Importer implements DocImporter {
 							document.setTitle(getValue(subchild));
 						} else if (name.equals("DATELINE") || name.equals("BODY")) {
 							document.addMetaData(name, getValue(subchild));
+							
 						}
 					}
 				}
 			}
 
 			// System.out.print(document);
+			document.processBody();
 			m_Index.addDocument(document);
 		}
 
@@ -122,7 +123,8 @@ public class Reuters21578_Importer implements DocImporter {
 		String[] children = directory.list();
 
 		if (children != null) {
-			for (int i = 0; i < children.length; i++) {
+//			for (int i = 0; i < children.length; i++) {
+			for (int i = 0, j = 0; i < children.length && j < 2; i++) {
 				File child = new File(directory + "\\" + children[i]);
 
 				if (child.isDirectory()) {
@@ -138,6 +140,7 @@ public class Reuters21578_Importer implements DocImporter {
 
 					if (name[name.length - 1].equals("xml")) {
 						addDocumentFromFile(child);
+						j++;
 					}
 				}
 			}
@@ -149,23 +152,15 @@ public class Reuters21578_Importer implements DocImporter {
 	}
 
 	public void addPreprocessor(Preprocessor preprocessor) {
-		// TODO Auto-generated method stub
-
+		m_Preprocessors.add(preprocessor);
 	}
-
-	public void addStemmer(Stemmer stemmer) {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	public void addStopwordRemover(StopwordRemover remover) {
 		// TODO Auto-generated method stub
 
 	}
 
 	public void setIndex(Index index) {
-		// TODO Auto-generated method stub
-
+		this.m_Index = index;
 	}
-
 }
