@@ -23,7 +23,7 @@ public class Reuters_21578_ImporterTest {
 		imp.setIndex(index);
 		imp.addDocumentsFromDirectory(new File("E:\\Eclipse\\irengine\\reuters21578-xml"));
 		
-		TermQuery t = new TermQuery("BankAmerica");
+		TermQuery t = new TermQuery("Capital");
 		ArrayList<Document> results = (ArrayList<Document>) t.evaluate(index);
 		
 		for(int i = 0; i < results.size(); i++ ){

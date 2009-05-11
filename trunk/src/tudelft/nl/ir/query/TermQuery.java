@@ -16,14 +16,13 @@ public class TermQuery implements Query {
 	}
 
 	public List<Document> evaluate(Index index) {
-
 		List<Document> results = new ArrayList<Document>();
 		List<Posting> postings = this.intersect(index);
 		System.out.println(postings.size() + " postings found");
-		for(int i = 0; i < postings.size(); i++){
-			results.add((Document)postings.get(i).getDocument());
+		for (int i = 0; i < postings.size(); i++) {
+			results.add((Document) postings.get(i).getDocument());
 		}
-		
+
 		return results;
 	}
 
@@ -34,7 +33,7 @@ public class TermQuery implements Query {
 		List<Posting> termPostings = new ArrayList<Posting>();
 		for (int i = 0; i < this.m_Terms.length; i++) {
 			termPostings = index.getPostings(this.m_Terms[i]);
-			if(termPostings != null && termPostings.size() > 0){
+			if (termPostings != null && termPostings.size() > 0) {
 				postings.addAll(termPostings);
 			}
 		}
