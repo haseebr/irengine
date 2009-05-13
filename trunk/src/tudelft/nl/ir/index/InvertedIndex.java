@@ -8,15 +8,18 @@ import java.util.Set;
 
 import tudelft.nl.ir.docs.Document;
 import tudelft.nl.ir.preprocessing.Stemmer;
+import tudelft.nl.ir.storage.DBStorage;
 
 public class InvertedIndex implements Index {
 
 	private HashMap<String, List<Posting>> m_Term2Postings;
 	private List<Stemmer> m_Stemmers;
+	private DBStorage m_Storage;
 
 	public InvertedIndex() {
 		this.m_Term2Postings = new HashMap<String, List<Posting>>();
 		this.m_Stemmers = new ArrayList<Stemmer>();
+		this.m_Storage = new DBStorage();
 	}
 	
 	/**
@@ -57,22 +60,24 @@ public class InvertedIndex implements Index {
 	 */
 	private void addTerm(String term, Document document) {
 		String stem;
-		Posting p;
-		ArrayList<Posting> postings;
+		//Posting p;
+		//ArrayList<Posting> postings;
 		ArrayList<Integer> positions = (ArrayList<Integer>) document.getTermPositions(term);
 
 		for (int i = 0; i < this.m_Stemmers.size(); i++) {
 			stem = this.m_Stemmers.get(i).getStem(term);
-			p = new InvertedPosting(document, positions);
-			
-			if (this.m_Term2Postings.containsKey(stem)) {
-				postings = (ArrayList<Posting>) this.m_Term2Postings.get(stem);
-				postings.add(p);
-			} else {
-				postings = new ArrayList<Posting>();
-				postings.add(p);
-				this.m_Term2Postings.put(stem, postings);
-			}
+			if(stem != null)
+				this.m_Storage.addTerm(stem, document, positions);
+//			p = new InvertedPosting(document, positions);
+//			
+//			if (this.m_Term2Postings.containsKey(stem)) {
+//				postings = (ArrayList<Posting>) this.m_Term2Postings.get(stem);
+//				postings.add(p);
+//			} else {
+//				postings = new ArrayList<Posting>();
+//				postings.add(p);
+//				this.m_Term2Postings.put(stem, postings);
+//			}
 		}
 	}
 

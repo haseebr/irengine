@@ -91,22 +91,23 @@ public class DBStorage {
 		for(int i = 0; i < positions.size(); i++){			
 			try {
 				s = conn.createStatement();
-				s.executeQuery (
-						"SELECT * "+
-						 "FROM Reuters21578 "+
-						 "WHERE term='"+ term +"' " +
-						 "AND document_id ="+ document.getID() +" " +
-						 "AND position="+ positions.get(i) +";"
-				);
-				rs = s.getResultSet();
-				if(!rs.next()){
+//				s.executeQuery (
+//						"SELECT * "+
+//						 "FROM Reuters21578 "+
+//						 "WHERE term='"+ term +"' " +
+//						 "AND document_id ="+ document.getID() +" " +
+//						 "AND position="+ positions.get(i) +";"
+//				);
+//				rs = s.getResultSet();
+//				if(!rs.next()){
 					s.executeUpdate (
 						"INSERT INTO `irengine`.`reuters21578` (`document_id` , `filepath` , `term` , `position`)"+
 						"VALUES ('"+ document.getID() +"', '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"');"
 					);
-				}
+//				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//System.out.println("duplicate:"+term);
+				//e.printStackTrace();
 			}	
 		}
 		this.closeConnection();

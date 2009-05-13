@@ -51,6 +51,7 @@ public class Reuters21578_Importer implements DocImporter {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			DocumentImpl document = new DocumentImpl();
 			document.setFilePath(filepath);
+			document.setID(i+"");
 			node = nodes.item(i);
 			children = node.getChildNodes();
 
