@@ -13,8 +13,11 @@ public interface Document {
 	
 	void setURI(String string);
 
+	void setFilePath(String filePath);
 	
 	// getters
+
+	String getFilePath();
 	
 	String getID();
 	

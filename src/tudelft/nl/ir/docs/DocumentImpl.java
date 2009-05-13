@@ -12,7 +12,8 @@ public class DocumentImpl implements Document {
 	HashMap<Integer, String> m_Position_2_Term_Map;
 	HashMap<String, Integer> m_Term_2_TF_Map;
 	HashMap<String, Object> m_Metadata;
-
+	
+	String m_FilePath;
 	String m_ID;
 	String m_Title;
 	String m_URI;
@@ -169,6 +170,14 @@ public class DocumentImpl implements Document {
 
 	public Set<String> getTerms() {
 		return this.m_Term_2_Position_Map.keySet();
+	}
+
+	public String getFilePath() {
+		return m_FilePath;
+	}
+
+	public void setFilePath(String filePath) {
+		m_FilePath = filePath;
 	}
 
 }
