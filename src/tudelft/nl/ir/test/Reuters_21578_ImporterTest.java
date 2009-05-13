@@ -8,6 +8,7 @@ import tudelft.nl.ir.importer.DocImporter;
 import tudelft.nl.ir.importer.Reuters21578_Importer;
 import tudelft.nl.ir.index.Index;
 import tudelft.nl.ir.index.InvertedIndex;
+import tudelft.nl.ir.preprocessing.MultiLingualStopwordRemover;
 import tudelft.nl.ir.preprocessing.PorterStemmer;
 import tudelft.nl.ir.query.TermQuery;
 import tudelft.nl.ir.storage.DBStorage;
@@ -16,8 +17,6 @@ public class Reuters_21578_ImporterTest {
 
 	public static void main(String[] args){
 		// http://modnlp.berlios.de/reuters21578.html
-		
-		
 		DocImporter imp = new Reuters21578_Importer();
 		
 		Index index = new InvertedIndex();	

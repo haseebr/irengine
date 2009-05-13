@@ -22,11 +22,14 @@ public class PorterStemmer implements Stemmer{
             // all characters must be letters
             char[] c = str.toCharArray();
             for (int i = 0; i < c.length; i++) {
-                if (!Character.isLetter(c[i]))
-                    return "Invalid term";
+                if (!Character.isLetter(c[i])){
+                	//Invalid term
+                	return null;
+                }
             }
         } else {
-            return "No term entered";
+        	//No term entered
+            return null;
         }
         str = step1a(str);
         str = step1b(str);

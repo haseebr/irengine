@@ -1,5 +1,8 @@
 package tudelft.nl.ir.docs;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,7 +15,7 @@ public class DocumentImpl implements Document {
 	HashMap<Integer, String> m_Position_2_Term_Map;
 	HashMap<String, Integer> m_Term_2_TF_Map;
 	HashMap<String, Object> m_Metadata;
-	
+
 	String m_FilePath;
 	String m_ID;
 	String m_Title;
@@ -64,19 +67,19 @@ public class DocumentImpl implements Document {
 	public void addMetaData(String field, Object object) {
 		m_Metadata.put(field, object);
 	}
-	
+
 	/**
 	 * @author Bas Wenneker, 05-05-2009
 	 */
-	public void processBody(){
+	public void processBody() {
 		if (m_Metadata.containsKey("BODY")) {
 			String body = (String) m_Metadata.get("BODY");
 			String[] tokens = body.split("\\s");
-			
+
 			for (int i = 0; i < tokens.length; i++) {
 				this.addTerm(tokens[i], i);
 			}
-			
+
 			m_DocLength = tokens.length;
 		}
 	}
@@ -117,6 +120,17 @@ public class DocumentImpl implements Document {
 	// setters
 
 	public void setID(String id) {
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			digest.update(this.getFilePath().getBytes());
+			digest.update(id.getBytes());
+			id = new BigInteger(1, digest.digest()).toString(16);
+			if (id.length() == 31) {
+				id = "0" + id;
+			}
+		} catch (NoSuchAlgorithmException e) {
+		}
 		m_ID = id;
 	}
 
@@ -165,7 +179,8 @@ public class DocumentImpl implements Document {
 	public List<Integer> getTermPositions(String term) {
 		if (this.m_Term_2_Position_Map.containsKey(term))
 			return this.m_Term_2_Position_Map.get(term);
-		else return null;
+		else
+			return null;
 	}
 
 	public Set<String> getTerms() {
