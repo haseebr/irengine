@@ -29,15 +29,17 @@ public class Reuters21578_Importer implements DocImporter {
 	
 	public void addDocumentFromFile(File file) {
 		DOMParser parser = new DOMParser();
+		String filepath = file.getAbsolutePath();
 		try {
-			parser.parse("file:" + file.getAbsolutePath());
+			parser.parse("file:" + filepath);
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		Document doc = parser.getDocument();
-
+		
+		
 		NodeList nodes = doc.getElementsByTagName("REUTERS");
 		NodeList children, subchildren;
 		Node node, child, subchild;
@@ -48,7 +50,7 @@ public class Reuters21578_Importer implements DocImporter {
 
 		for (int i = 0; i < nodes.getLength(); i++) {
 			DocumentImpl document = new DocumentImpl();
-
+			document.setFilePath(filepath);
 			node = nodes.item(i);
 			children = node.getChildNodes();
 
