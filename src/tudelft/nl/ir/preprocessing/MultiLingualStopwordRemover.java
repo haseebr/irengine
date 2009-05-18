@@ -37,8 +37,7 @@ public class MultiLingualStopwordRemover implements StopwordRemover {
 	}
 
 	public boolean isStopword(String term) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.m_Stopwords.contains(term);
 	}
 
 }

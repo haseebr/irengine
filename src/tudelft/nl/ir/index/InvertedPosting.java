@@ -18,9 +18,14 @@ public class InvertedPosting implements Posting{
 		this.setDocument(document);
 		this.m_Positions = positions;
 	}
+	public InvertedPosting(ArrayList<Integer> positions){
+		//this.setDocument(document);
+		this.m_Positions = positions;
+	}
 	
 	private boolean invariant(){
-		return (this.m_Positions != null && this.m_Document != null);
+		return true;
+		//return (this.m_Positions != null && this.m_Document != null);
 	}
 	
 	@Override

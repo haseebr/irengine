@@ -19,9 +19,7 @@ public class Reuters_21578_ImporterTest {
 		// http://modnlp.berlios.de/reuters21578.html
 		DocImporter imp = new Reuters21578_Importer();
 		
-		Index index = new InvertedIndex();	
-		index.addStemmer(new PorterStemmer());
-		
+		Index index = new InvertedIndex();		
 		imp.setIndex(index);
 		imp.addDocumentsFromDirectory(new File("reuters21578-xml"));
 		

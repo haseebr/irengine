@@ -30,6 +30,7 @@ public class Reuters21578_Importer implements DocImporter {
 	public void addDocumentFromFile(File file) {
 		DOMParser parser = new DOMParser();
 		String filepath = file.getAbsolutePath();
+		System.out.println("##: "+filepath);
 		try {
 			parser.parse("file:" + filepath);
 		} catch (SAXException e) {
@@ -83,7 +84,7 @@ public class Reuters21578_Importer implements DocImporter {
 			}
 
 			// System.out.print(document);
-			document.processBody();
+			//document.processBody();
 			m_Index.addDocument(document);
 		}
 
