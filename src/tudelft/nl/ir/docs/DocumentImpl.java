@@ -32,9 +32,10 @@ public class DocumentImpl implements Document {
 		m_Metadata = new HashMap<String, Object>();
 	}
 
-	public DocumentImpl(String id) {
+	public DocumentImpl(String filepath, String id) {
 		this();
-		m_ID = id;
+		this.setFilePath(filepath);
+		this.setID(id);
 	}
 
 	public void addTerm(String term, int position) {
