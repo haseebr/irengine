@@ -50,9 +50,11 @@ public class InvertedIndex implements Index {
 	 */
 	public void addDocument(Document document) {
 		HashMap<String, ArrayList<Integer>> map = this.m_Preprocessor.process(document.getContent());
-		for( Map.Entry<String, ArrayList<Integer>> entry : map.entrySet()){
-			this.m_Storage.addTerm(entry.getKey(), document, entry.getValue());
-		}
+		this.m_Storage.addMap(map, document);
+//		for( Map.Entry<String, ArrayList<Integer>> entry : map.entrySet()){
+//			this.m_Storage.addTerm(entry.getKey(), document, entry.getValue());
+//		}
+		//this.m_Storage.commit();
 		// Set<String> terms = document.getTerms();
 		// for (Iterator<String> i = terms.iterator(); i.hasNext();) {
 		// this.addTerm((String) i.next(), document);

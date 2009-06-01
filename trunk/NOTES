@@ -1,0 +1,7 @@
+05-27-2009 
+-Switched reuters table from MYISAM to INNODB because INNODB has rowlevel locked
+and MYISAM table level locking. Inserting should go faster now.
+-Also removed the index on term to increase insert speed.
+-Now performance: 10k entries in 5 minutes.
+
+http://forums.mysql.com/read.php?39,175236,175518#msg-175518
