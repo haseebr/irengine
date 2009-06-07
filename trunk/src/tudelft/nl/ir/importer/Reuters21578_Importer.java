@@ -7,6 +7,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import tudelft.nl.ir.docs.DocumentImpl;
 import tudelft.nl.ir.index.Index;
@@ -21,7 +23,9 @@ public class Reuters21578_Importer implements DocImporter {
 		String filepath = file.getAbsolutePath();
 		try {
 			parser.parse("file:" + filepath);
-		} catch (SAXException e) {
+		} catch(MalformedByteSequenceException e){
+			e.printStackTrace();
+		}catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -31,16 +35,17 @@ public class Reuters21578_Importer implements DocImporter {
 		NodeList nodes = doc.getElementsByTagName("REUTERS");
 		NodeList children, subchildren;
 		Node node, child, subchild;
-		String name;
+		String name, id;
 		DocumentImpl document;
 		
 		System.out.println("There are " + nodes.getLength() + "  documents in "
 				+ file.getAbsolutePath());
 
-		for (int i = 0, ln = nodes.getLength(); i < ln; i++) {		
-			document = new DocumentImpl(filepath, i+"");
-			node = nodes.item(i);
-			children = node.getChildNodes();
+		for (int i = 0, ln = nodes.getLength(); i < ln; i++) {	
+			node = nodes.item(i);			
+			id = node.getAttributes().getNamedItem("NEWID").getNodeValue();
+			document = new DocumentImpl(filepath, Integer.valueOf(id).intValue());
+			children = node.getChildNodes();		
 			
 			for (int j = 0; j < children.getLength(); j++) {
 				child = children.item(j);

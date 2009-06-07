@@ -3,15 +3,22 @@ package tudelft.nl.ir.storage;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import tudelft.nl.ir.docs.Document;
+import tudelft.nl.ir.docs.DocumentImpl;
+import tudelft.nl.ir.index.InvertedPosting;
 import tudelft.nl.ir.index.Posting;
 
 public class DBStorage {
@@ -32,7 +39,7 @@ public class DBStorage {
 //			               + "PRIMARY KEY (id),"
 //			               + "name CHAR(40), category CHAR(40))");
 			}
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
 			this.closeConnection();
@@ -71,7 +78,7 @@ public class DBStorage {
 			s = conn.createStatement();			
 			s.executeQuery (
 					"SELECT * "+
-					 "FROM Reuters21578 "+
+					 "FROM reuters_term "+
 					 "WHERE term='"+ term +"' LIMIT 1;"
 			);
 			rs = s.getResultSet();
@@ -94,7 +101,7 @@ public class DBStorage {
 		Statement s;
 		ResultSet rs;
 		String sql = "SELECT * "+
-		 				"FROM Reuters21578 "+
+		 				"FROM reuters_term "+
 		 				"WHERE term='"+ term;
 		
 		if(document != null){
@@ -124,9 +131,11 @@ public class DBStorage {
 		Connection conn = this.getConnection();
 		ResultSet rs;
 		List<Integer> positions;
-		String term, id = document.getID();
+		String term;
+		int id = document.getID();
 		
 		try{
+			PreparedStatement ps;
 			Statement s1 = conn.createStatement();
 			for( Map.Entry<String, ArrayList<Integer>> entry : map.entrySet()){
 				term = entry.getKey();
@@ -138,17 +147,27 @@ public class DBStorage {
 					//s1 = conn.createStatement();
 //					s1.executeQuery (
 //						"SELECT term_id "+
-//						 "FROM Reuters21578 "+
+//						 "FROM reuters_term "+
 //						 "WHERE term='"+ term +"' " +
 //						 "AND document_id='"+ id +"';"
 //					);
 //					
 //					rs = s1.getResultSet();
 //					if(!rs.next()){						
+//						for(int i = 0, size = positions.size(); i < size; i++){
+//							//s1.addBatch("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES ("+ id +", '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
+//						}
+//						s1.executeBatch();
+						
+						ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES (?, ?, ?)");
 						for(int i = 0, size = positions.size(); i < size; i++){
-							s1.addBatch("INSERT INTO `irengine`.`reuters21578` (`document_id` , `filepath` , `term` , `position`) VALUES ('"+ id +"', '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
+							ps.setInt(1, document.getID());
+							ps.setString(2, term);
+							ps.setInt(3, positions.get(i));
+							ps.addBatch();
+							//s.addBatch("INSERT INTO `irengine`.`reuters_term` (`document_id` , `filepath` , `term` , `position`) VALUES ("+ document.getID() +", '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
 						}
-						s1.executeBatch();
+						ps.executeBatch();
 //					}
 				} catch(BatchUpdateException b) {
 					b.printStackTrace();
@@ -156,7 +175,7 @@ public class DBStorage {
 					e.printStackTrace();
 				}		
 			}
-			
+
 			conn.commit();
 			s1.close();
 			this.closeConnection();
@@ -179,9 +198,9 @@ public class DBStorage {
 			s = conn.createStatement();
 			s.executeQuery (
 				"SELECT term_id "+
-				 "FROM Reuters21578 "+
+				 "FROM reuters_term "+
 				 "WHERE term='"+ term +"' " +
-				 "AND document_id='"+ document.getID() +"';"
+				 "AND document_id="+ document.getID() +";"
 			);
 			
 			rs = s.getResultSet();
@@ -191,9 +210,14 @@ public class DBStorage {
 				 * inserting all terms one by one.
 				 */
 				//s = conn.createStatement();
-				//String sql = "INSERT INTO `irengine`.`reuters21578` (`document_id` , `filepath` , `term` , `position`) VALUES ";
+				//String sql = "INSERT INTO `irengine`.`reuters_term` (`document_id` , `filepath` , `term` , `position`) VALUES ";
+				PreparedStatement ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES (?, ?, ?, ?)");
 				for(int i = 0, size = positions.size(); i < size; i++){
-					s.addBatch("INSERT INTO `irengine`.`reuters21578` (`document_id` , `filepath` , `term` , `position`) VALUES ('"+ document.getID() +"', '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
+					ps.setInt(1, document.getID());
+					ps.setString(2, term);
+					ps.setInt(3, positions.get(i));
+					ps.addBatch();
+					//s.addBatch("INSERT INTO `irengine`.`reuters_term` (`document_id` , `filepath` , `term` , `position`) VALUES ("+ document.getID() +", '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
 				}
 				s.executeBatch();
 				conn.commit();
@@ -216,29 +240,105 @@ public class DBStorage {
 			e.printStackTrace();
 		}
 	}
-	public ArrayList<Posting> getPostings(String term){
-		ArrayList<Posting> result = new ArrayList<Posting>();
+	public void addDocument(Document document){
 		Connection conn = this.getConnection();
 		Statement s;
 		ResultSet rs;
+		
+		try {					
+			s = conn.createStatement();
+			s.executeQuery (
+				"SELECT document_id "+
+				 "FROM reuters_document "+
+				 "WHERE document_id="+ document.getID() +";"
+			);
+			
+			rs = s.getResultSet();
+			if(!rs.next()){
+				PreparedStatement ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_document` (`document_id` , `filepath`, `title` , `body`) VALUES (?, ?, ?, ?);");
+				ps.setInt(1, document.getID());
+				ps.setString(2, document.getFilePath());
+				ps.setString(3, document.getTitle());
+				ps.setString(4, document.getContent());
+				ps.executeUpdate();
+				//s.executeUpdate("INSERT INTO `irengine`.`reuters_document` (`document_id` , `title` , `body`) VALUES ("+ document.getID() +", '"+ document.getTitle() +"', '"+ document.getContent() +"')");
+				conn.commit();
+			}
+			s.close();
+		} catch(BatchUpdateException b) {
+
+			b.printStackTrace();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		this.closeConnection();
+	}
+	public ArrayList<Posting> getPostings(String term){
+		SortedMap<Integer, ArrayList<Integer>> map = new TreeMap<Integer, ArrayList<Integer>>();
+		HashMap<Integer, DocumentImpl> docmap = new HashMap<Integer, DocumentImpl>();
+		DocumentImpl doc;
+		ArrayList<Integer> positions = new ArrayList<Integer>();
+		ArrayList<Posting> result = new ArrayList<Posting>();
+		
+		Connection conn = this.getConnection();
+		Statement s, s2;
+		ResultSet rs, docrs;
+		int document_id, position;
 		try {
 			s = conn.createStatement();			
 			s.executeQuery (
-					"SELECT position "+
-					 "FROM Reuters21578 "+
-					 "WHERE term='"+ term +"';"
+					"SELECT document_id, position "+
+					 "FROM reuters_term "+
+					 "WHERE term='"+ term +"' " +
+					 "ORDER BY document_id DESC;"
 			);
 			rs = s.getResultSet();
-			this.closeConnection();
 			while(rs.next()){
-				//result.add()
-			}			
+				document_id = rs.getInt("document_id");
+				position = rs.getInt("position");
+				if(!docmap.containsKey(document_id)){
+					s2 = conn.createStatement();	
+					s2.executeQuery (
+							"SELECT filepath, title, body "+
+							 "FROM reuters_document "+
+							 "WHERE document_id="+ document_id +" LIMIT 1;"
+					);
+					docrs = s2.getResultSet();
+					if(docrs.first()){
+						doc = new DocumentImpl(docrs.getString("filepath"), document_id);
+						doc.setTitle(docrs.getString("title"));
+						doc.addMetaData("BODY", (String)docrs.getString("body"));
+						docmap.put(document_id, doc);
+					}
+				}else{
+					doc = docmap.get(document_id);
+				}
+									
+				if(map.containsKey(document_id)){
+					positions = map.get(document_id);
+					positions.add(position);
+				}else{
+					positions = new ArrayList<Integer>();
+					positions.add(position);
+					map.put(document_id, positions);
+				}	
+			}	
+			this.closeConnection();		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			this.closeConnection();
 		}
-		return null;		
+
+		for(Map.Entry<Integer, ArrayList<Integer>> entry : map.entrySet()){
+			document_id = entry.getKey();
+			positions = entry.getValue();
+			if(docmap.containsKey(document_id)){
+				result.add(new InvertedPosting(docmap.get(document_id), positions));
+			}
+		}
+		
+		return result;		
 	}
 	/**
 	 * Make sure to close the connection when this object's garbage collected.

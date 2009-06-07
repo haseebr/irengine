@@ -7,7 +7,7 @@ public interface Document {
 
 	// setters
 	
-	void setID(String id);
+	void setID(int id);
 	
 	void setTitle(String string);
 	
@@ -19,7 +19,7 @@ public interface Document {
 
 	String getFilePath();
 	
-	String getID();
+	int getID();
 	
 	String getContent();
 	
