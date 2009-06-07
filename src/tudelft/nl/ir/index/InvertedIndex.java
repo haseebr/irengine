@@ -35,11 +35,12 @@ public class InvertedIndex implements Index {
 	 * @return List<Posting> An ArrayList with postings of a normalized term.
 	 */
 	public List<Posting> getPostings(String term) {		
-		ArrayList<Posting> result = new ArrayList<Posting>();
+		//ArrayList<Posting> result = new ArrayList<Posting>();
 		term = this.m_Preprocessor.processToken(term);
+		System.out.println(term);
 		
 		
-		return result;
+		return this.m_Storage.getPostings(term);
 	}
 
 	/**
@@ -50,6 +51,7 @@ public class InvertedIndex implements Index {
 	 */
 	public void addDocument(Document document) {
 		HashMap<String, ArrayList<Integer>> map = this.m_Preprocessor.process(document.getContent());
+		this.m_Storage.addDocument(document);
 		this.m_Storage.addMap(map, document);
 //		for( Map.Entry<String, ArrayList<Integer>> entry : map.entrySet()){
 //			this.m_Storage.addTerm(entry.getKey(), document, entry.getValue());

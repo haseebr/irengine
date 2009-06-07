@@ -19,9 +19,9 @@ public class DocumentImpl implements Document {
 	HashMap<String, Object> m_Metadata;
 
 	String m_FilePath;
-	String m_ID;
 	String m_Title;
 	String m_URI;
+	int m_ID;
 
 	int m_DocLength;
 
@@ -32,7 +32,7 @@ public class DocumentImpl implements Document {
 		m_Metadata = new HashMap<String, Object>();
 	}
 
-	public DocumentImpl(String filepath, String id) {
+	public DocumentImpl(String filepath, int id) {
 		this();
 		this.setFilePath(filepath);
 		this.setID(id);
@@ -114,7 +114,7 @@ public class DocumentImpl implements Document {
 
 	}
 
-	public String getID() {
+	public int getID() {
 		return m_ID;
 	}
 
@@ -125,19 +125,21 @@ public class DocumentImpl implements Document {
 
 	// setters
 
-	public void setID(String id) {
-		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance("MD5");
-			digest.update(this.getFilePath().getBytes());
-			digest.update(id.getBytes());
-			id = new BigInteger(1, digest.digest()).toString(16);
-			if (id.length() == 31) {
-				id = "0" + id;
-			}
-		} catch (NoSuchAlgorithmException e) {
-		}
-		m_ID = id;
+	public void setID(int id) {
+//		MessageDigest digest;
+//		try {
+//			digest = MessageDigest.getInstance("MD5");
+//			digest.update(this.getFilePath().getBytes());
+//			digest.update(id.getBytes());
+//			id = new BigInteger(1, digest.digest()).toString(16);
+//			if (id.length() == 31) {
+//				id = "0" + id;
+//			}
+//		} catch (NoSuchAlgorithmException e) {
+//		}
+//		m_ID = id;
+		
+		this.m_ID = id;
 	}
 
 	public void setTitle(String title) {
@@ -149,7 +151,7 @@ public class DocumentImpl implements Document {
 	}
 
 	public String getTitle() {
-		return m_Title;
+		return (this.m_Title!=null ? this.m_Title : "");
 	}
 
 	public boolean contains(String term) {
