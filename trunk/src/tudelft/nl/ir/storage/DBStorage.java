@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +27,7 @@ public class DBStorage {
 		Statement s;
 		try {
 			s = conn.createStatement();
-			s.executeQuery ("SHOW TABLES LIKE 'Reuters21572';");
+			s.executeQuery ("SHOW TABLES LIKE 'reuters_document';");
 			ResultSet rs = s.getResultSet();
 			if(!rs.next()){
 				// Table not present, so create!
@@ -65,8 +63,7 @@ public class DBStorage {
 		if (this.connection != null) {
 			try {
 				connection.close();
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 	}
 	
@@ -129,10 +126,9 @@ public class DBStorage {
 	 */
 	public void addMap(HashMap<String, ArrayList<Integer>> map, Document document){
 		Connection conn = this.getConnection();
-		ResultSet rs;
 		List<Integer> positions;
 		String term;
-		int id = document.getID();
+		int document_id = document.getID();
 		
 		try{
 			PreparedStatement ps;
@@ -143,32 +139,18 @@ public class DBStorage {
 				if(positions.size()==0)
 					continue;
 				
-				try {					
-					//s1 = conn.createStatement();
-//					s1.executeQuery (
-//						"SELECT term_id "+
-//						 "FROM reuters_term "+
-//						 "WHERE term='"+ term +"' " +
-//						 "AND document_id='"+ id +"';"
-//					);
-//					
-//					rs = s1.getResultSet();
-//					if(!rs.next()){						
-//						for(int i = 0, size = positions.size(); i < size; i++){
-//							//s1.addBatch("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES ("+ id +", '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
-//						}
-//						s1.executeBatch();
-						
-						ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES (?, ?, ?)");
-						for(int i = 0, size = positions.size(); i < size; i++){
-							ps.setInt(1, document.getID());
-							ps.setString(2, term);
-							ps.setInt(3, positions.get(i));
-							ps.addBatch();
-							//s.addBatch("INSERT INTO `irengine`.`reuters_term` (`document_id` , `filepath` , `term` , `position`) VALUES ("+ document.getID() +", '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
-						}
-						ps.executeBatch();
-//					}
+				try {
+					// Here we use a prepared statement because it escapes the term
+					// string automatically.
+					ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES (?, ?, ?)");
+					for(int i = 0, size = positions.size(); i < size; i++){
+						ps.setInt(1, document_id);
+						ps.setString(2, term);
+						ps.setInt(3, positions.get(i));
+						ps.addBatch();
+					}
+					// Execute in batch mode, which is really fast.
+					ps.executeBatch();
 				} catch(BatchUpdateException b) {
 					b.printStackTrace();
 				} catch (SQLException e) {
@@ -193,6 +175,7 @@ public class DBStorage {
 		Connection conn = this.getConnection();
 		Statement s;
 		ResultSet rs;
+		PreparedStatement ps;
 		
 		try {					
 			s = conn.createStatement();
@@ -205,41 +188,40 @@ public class DBStorage {
 			
 			rs = s.getResultSet();
 			if(!rs.next() && positions.size() > 0){
-				/**
-				 * Build up the insert query, this is more efficient than 
-				 * inserting all terms one by one.
-				 */
-				//s = conn.createStatement();
-				//String sql = "INSERT INTO `irengine`.`reuters_term` (`document_id` , `filepath` , `term` , `position`) VALUES ";
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES (?, ?, ?, ?)");
+				// Use a prepared statement because of the speed and it escapes
+				// the inserted values.
+				ps = conn.prepareStatement("INSERT INTO `irengine`.`reuters_term` (`document_id` , `term` , `position`) VALUES (?, ?, ?, ?)");
 				for(int i = 0, size = positions.size(); i < size; i++){
 					ps.setInt(1, document.getID());
 					ps.setString(2, term);
 					ps.setInt(3, positions.get(i));
 					ps.addBatch();
-					//s.addBatch("INSERT INTO `irengine`.`reuters_term` (`document_id` , `filepath` , `term` , `position`) VALUES ("+ document.getID() +", '"+ document.getFilePath() +"', '"+ term +"', '"+positions.get(i)+"')");
 				}
 				s.executeBatch();
 				conn.commit();
 			}
-
 			s.close();
 		} catch(BatchUpdateException b) {
-
 			b.printStackTrace();
 		}catch (SQLException e) {
 			e.printStackTrace();
-		}	
+		}
+		
 		this.closeConnection();
 	}
-	public void commit(){
-		try {
-			this.getConnection().commit();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public void commit(){
+//		try {
+//			this.getConnection().commit();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+	/**
+	 * Adds a document to the db. It looks in the database if the id of the
+	 * document already exists, if not, the document is added.
+	 * @param Document document Document to add to the db.
+	 */
 	public void addDocument(Document document){
 		Connection conn = this.getConnection();
 		Statement s;
@@ -261,12 +243,10 @@ public class DBStorage {
 				ps.setString(3, document.getTitle());
 				ps.setString(4, document.getContent());
 				ps.executeUpdate();
-				//s.executeUpdate("INSERT INTO `irengine`.`reuters_document` (`document_id` , `title` , `body`) VALUES ("+ document.getID() +", '"+ document.getTitle() +"', '"+ document.getContent() +"')");
 				conn.commit();
 			}
 			s.close();
 		} catch(BatchUpdateException b) {
-
 			b.printStackTrace();
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -281,18 +261,18 @@ public class DBStorage {
 		ArrayList<Posting> result = new ArrayList<Posting>();
 		
 		Connection conn = this.getConnection();
-		Statement s, s2;
+		Statement s1, s2;
 		ResultSet rs, docrs;
 		int document_id, position;
 		try {
-			s = conn.createStatement();			
-			s.executeQuery (
+			s1 = conn.createStatement();			
+			s1.executeQuery (
 					"SELECT document_id, position "+
 					 "FROM reuters_term "+
 					 "WHERE term='"+ term +"' " +
 					 "ORDER BY document_id DESC;"
 			);
-			rs = s.getResultSet();
+			rs = s1.getResultSet();
 			while(rs.next()){
 				document_id = rs.getInt("document_id");
 				position = rs.getInt("position");

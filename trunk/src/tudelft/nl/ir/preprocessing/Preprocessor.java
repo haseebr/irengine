@@ -4,14 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface Preprocessor {
-
-//	public HashMap<String,Posting> process(String content);
-	public HashMap<String, ArrayList<Integer>> process(String content);
-	
-	public void addStemmer(Stemmer stemmer);
-	
-	public void addStopwordRemover(StopwordRemover remover);
-	
+	public HashMap<String, ArrayList<Integer>> process(String content);	
+	public void addStemmer(Stemmer stemmer);	
+	public void addStopwordRemover(StopwordRemover remover);	
 	public void addTermProcessor(TermProcessor processor);
 	public String processToken(String token);
 }
