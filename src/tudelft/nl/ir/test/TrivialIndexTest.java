@@ -1,9 +1,6 @@
 package tudelft.nl.ir.test;
 
 import java.io.File;
-import java.util.List;
-
-import tudelft.nl.ir.docs.Document;
 import tudelft.nl.ir.importer.DocImporter;
 import tudelft.nl.ir.importer.DocImporterImpl;
 import tudelft.nl.ir.index.TrivialIndex;
@@ -16,7 +13,6 @@ public class TrivialIndexTest {
 	
 	public static void main(String[] args)
 	{
-		List<Document> results;
 		
 		DocImporter myImporter = new DocImporterImpl();
 		
@@ -37,7 +33,7 @@ public class TrivialIndexTest {
 		node.setLeft(new TermNode("swedish"));
 		node.setRight(new TermNode("story"));
 		
-		results = query.evaluate(index);
+		query.evaluate(index);
 		
 	}
 }

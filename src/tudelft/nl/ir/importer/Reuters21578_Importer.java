@@ -14,10 +14,20 @@ import tudelft.nl.ir.docs.DocumentImpl;
 import tudelft.nl.ir.index.Index;
 
 public class Reuters21578_Importer implements DocImporter {
-
+	/**
+	 * Keeps track of the number of imported documents.
+	 */
 	private int m_docCount = 0;
+	/**
+	 * The Index that indexes and stores the document.
+	 */
 	private Index m_Index;
-	
+	/**
+	 * Adds all documents that are in a Reuters xml file. The documents are stored
+	 * in the database. At this moment only the documents BODY and TITLE are
+	 * stored in the database.
+	 * @param File file - Reuters file to parse and store.
+	 */
 	public void addDocumentFromFile(File file) {
 		DOMParser parser = new DOMParser();
 		String filepath = file.getAbsolutePath();
@@ -43,6 +53,7 @@ public class Reuters21578_Importer implements DocImporter {
 
 		for (int i = 0, ln = nodes.getLength(); i < ln; i++) {	
 			node = nodes.item(i);			
+			// NEWID contains the document_id that's stored in the database.
 			id = node.getAttributes().getNamedItem("NEWID").getNodeValue();
 			document = new DocumentImpl(filepath, Integer.valueOf(id).intValue());
 			children = node.getChildNodes();		

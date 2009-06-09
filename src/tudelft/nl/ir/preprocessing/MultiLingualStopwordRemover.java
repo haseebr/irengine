@@ -9,12 +9,14 @@ import java.util.HashSet;
 
 public class MultiLingualStopwordRemover implements StopwordRemover {
 	private HashSet<String> m_Stopwords;
-
+	
 	public MultiLingualStopwordRemover() {
 		this.m_Stopwords = new HashSet<String>();
 		this.loadStopwordsFromFile("stopwords//multilingual.txt");
 	}
-
+	/**
+	 * Loads multilingual stopwords from a file. 
+	 */
 	public void loadStopwordsFromFile(String file) {
 		try {
 			FileInputStream fstream = new FileInputStream(file);
@@ -25,19 +27,15 @@ public class MultiLingualStopwordRemover implements StopwordRemover {
 			while ((line = br.readLine()) != null) {
 				this.m_Stopwords.add(line);
 			}
-
 			in.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// Close the input stream
-		// open the file and read the stopwords
-		// assumes a one per line format
 	}
-
+	/**
+	 * Returns true when term is a stopword.
+	 */
 	public boolean isStopword(String term) {
 		return this.m_Stopwords.contains(term);
 	}
-
 }

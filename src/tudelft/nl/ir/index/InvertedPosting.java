@@ -1,7 +1,6 @@
 package tudelft.nl.ir.index;
 import java.util.ArrayList;
 import java.util.List;
-
 import tudelft.nl.ir.docs.Document;
 import tudelft.nl.ir.index.Posting;
 

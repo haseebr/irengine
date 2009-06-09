@@ -1,10 +1,7 @@
 package tudelft.nl.ir.docs;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -171,7 +168,7 @@ public class DocumentImpl implements Document {
 
 		string += this.m_ID + " (" + this.m_Title + "):" + this.getContent();
 
-		for (Iterator i = m_Metadata.keySet().iterator(); i.hasNext();) {
+		for (Iterator<String> i = m_Metadata.keySet().iterator(); i.hasNext();) {
 
 			field = (String) i.next();
 

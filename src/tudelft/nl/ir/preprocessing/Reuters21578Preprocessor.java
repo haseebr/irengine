@@ -3,7 +3,6 @@ package tudelft.nl.ir.preprocessing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import tudelft.nl.ir.index.Posting;
 
 public class Reuters21578Preprocessor implements Preprocessor{
 	
@@ -13,6 +12,7 @@ public class Reuters21578Preprocessor implements Preprocessor{
 	private List<StopwordRemover> m_StopwordRemovers = new ArrayList<StopwordRemover>();
 	// List that'll contain all stopwordremovers for this preprocessor.
 	private List<TermProcessor> m_TermProcessor = new ArrayList<TermProcessor>();
+	// The tokenizer splits a text into tokens.
 	private Tokenizer m_Tokenizer = new StandardTokenizer();
 	
 	public Reuters21578Preprocessor(){
@@ -42,6 +42,11 @@ public class Reuters21578Preprocessor implements Preprocessor{
 	public void addTermProcessor(TermProcessor processor) {
 		this.m_TermProcessor.add(processor);		
 	}
+	/**
+	 * Processes a text. First the text is tokenized, then each token is processed
+	 * using processToken. For each processed token an arraylist is kept which
+	 * holds the token positions inside the text.
+	 */
 	public HashMap<String, ArrayList<Integer>> process(String content){
 		HashMap<String, ArrayList<Integer>> result = new HashMap<String, ArrayList<Integer>>();
 		String[] tokens = this.m_Tokenizer.tokenize(content);
@@ -63,6 +68,12 @@ public class Reuters21578Preprocessor implements Preprocessor{
 		}
 		return result;
 	}
+	/**
+	 * Should be retrieving a single token. First the token is processed by the
+	 * punctuation remover and lowercase maker. The we look if the word is a
+	 * stopword. If it's not a stopword, we also pass the token to the 
+	 * PorterStemmer to process the token. The result is returned.
+	 */
 	public String processToken(String token){
 		if(token == null || token.length() == 0)
 			return null;
