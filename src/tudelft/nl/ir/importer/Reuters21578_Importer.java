@@ -125,7 +125,7 @@ public class Reuters21578_Importer implements DocImporter {
 
 		if (children != null) {
 			for (int i = 0, j = 0; i < children.length/* && j < 2*/; i++) {
-				File child = new File(directory + "\\" + children[i]);
+				File child = new File(directory + "//" + children[i]);
 
 				if (child.isDirectory() && !child.isHidden()) {
 					// A visible folder, add its children.

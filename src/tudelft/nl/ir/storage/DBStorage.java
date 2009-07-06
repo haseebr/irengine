@@ -47,8 +47,8 @@ public class DBStorage {
 	private Connection getConnection(){
 		try {
 			String user = "root";
-			String password = "";
-			String url = "jdbc:mysql://localhost/irengine";
+			String password = "root";
+			String url = "jdbc:mysql://localhost:8889/irengine";
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			
 			this.connection = DriverManager.getConnection(url, user, password);

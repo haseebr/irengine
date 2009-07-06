@@ -27,13 +27,13 @@ public class InvertedPosting implements Posting{
 		//return (this.m_Positions != null && this.m_Document != null);
 	}
 	
-	@Override
+	//@Override
 	public Document getDocument() {
 		assert invariant();
 		return this.m_Document;
 	}
 
-	@Override
+	//@Override
 	public void setDocument(Document document) {
 		this.m_Document = document;		
 	}
