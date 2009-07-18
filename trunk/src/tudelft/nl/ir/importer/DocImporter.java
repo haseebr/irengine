@@ -1,7 +1,6 @@
 package tudelft.nl.ir.importer;
 
 import java.io.File;
-
 import tudelft.nl.ir.index.Index;
 
 public interface DocImporter {

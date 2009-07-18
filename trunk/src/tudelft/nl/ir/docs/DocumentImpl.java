@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class DocumentImpl implements Document {
 
-	HashMap<String, List<Integer>> m_Term_2_Position_Map;
+	public HashMap<String, List<Integer>> m_Term_2_Position_Map;
 	HashMap<Integer, String> m_Position_2_Term_Map;
 	HashMap<String, Integer> m_Term_2_TF_Map;
 	HashMap<String, Object> m_Metadata;
@@ -204,5 +204,9 @@ public class DocumentImpl implements Document {
 			e.printStackTrace();
 		};
 	}
-
+	
+	public String getSnippet(String term){
+		
+		return null;
+	}
 }

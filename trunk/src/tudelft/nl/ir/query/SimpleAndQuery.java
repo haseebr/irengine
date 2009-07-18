@@ -19,8 +19,11 @@ public class SimpleAndQuery implements Query{
 		this.m_Index = index;		
 		List<Document> results = new ArrayList<Document>();
 		List<Posting> postings = this.intersect();
+		
+		Document doc = null;
 		for (int i = 0; i < postings.size(); i++) {
-			results.add((Document) postings.get(i).getDocument());
+			doc = postings.get(i).getDocument();
+			results.add(doc);
 		}
 		return results;
 	}
