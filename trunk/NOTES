@@ -5,3 +5,75 @@ and MYISAM table level locking. Inserting should go faster now.
 -Now performance: 10k entries in 5 minutes.
 
 http://forums.mysql.com/read.php?39,175236,175518#msg-175518
+
+DROP FUNCTION `fn_get_tf`//
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_tf`(_id INT, _term VARCHAR(128)) RETURNS int(8)
+    READS SQL DATA
+BEGIN
+      DECLARE r INT;
+      SELECT  COUNT(term)
+      INTO    r
+      FROM    reuters_term
+      WHERE   document_id = _id AND term = _term;
+      RETURN r;
+END
+
+
+
+--
+-- Table structure for table `reuters_document`
+--
+
+CREATE TABLE `reuters_document` (
+  `document_id` int(10) unsigned NOT NULL,
+  `filepath` varchar(128) NOT NULL,
+  `title` varchar(128) NOT NULL,
+  `body` text NOT NULL,
+  PRIMARY KEY  (`document_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reuters_term`
+--
+
+CREATE TABLE `reuters_term` (
+  `term_id` int(11) NOT NULL auto_increment,
+  `document_id` int(10) unsigned NOT NULL,
+  `term` varchar(128) NOT NULL,
+  `position` int(10) unsigned NOT NULL,
+  `tf` mediumint(8) unsigned NOT NULL,
+  `tfidf` float unsigned NOT NULL,
+  PRIMARY KEY  (`term_id`),
+  KEY `term` (`term`),
+  KEY `document_id` (`document_id`),
+  KEY `document_id_2` (`document_id`,`term`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+
+DROP FUNCTION `fn_get_tf`//
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_tf`(_id INT, _term VARCHAR(128)) RETURNS int(8)
+    READS SQL DATA
+BEGIN
+      DECLARE r INT;
+      SELECT  COUNT(term)
+      INTO    r
+      FROM    reuters_term
+      WHERE   document_id = _id AND term = _term;
+      RETURN r;
+END
+
+DROP FUNCTION `fn_get_tfidf`//
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_tfidf`(_tf INT, _term VARCHAR(128)) RETURNS float
+    READS SQL DATA
+BEGIN
+      DECLARE r FLOAT;
+      SELECT  _tf * log(19027 DIV COUNT(DISTINCT(document_id)))
+      INTO    r
+      FROM    reuters_term
+      WHERE   term = _term;
+      RETURN r;
+END
+
+

@@ -8,19 +8,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import tudelft.nl.ir.index.Index;
+
 public class DocumentImpl implements Document {
 
-	public HashMap<String, List<Integer>> m_Term_2_Position_Map;
-	HashMap<Integer, String> m_Position_2_Term_Map;
-	HashMap<String, Integer> m_Term_2_TF_Map;
-	HashMap<String, Object> m_Metadata;
+	private HashMap<String, List<Integer>> m_Term_2_Position_Map;
+	private HashMap<Integer, String> m_Position_2_Term_Map;
 
-	String m_FilePath;
-	String m_Title;
-	String m_URI;
-	int m_ID;
+	private HashMap<String, Integer> m_Term_2_TF_Map;
+	private HashMap<String, Object> m_Metadata;
 
-	int m_DocLength;
+	private String m_FilePath;
+	private String m_Title;
+	private String m_URI;
+	private int m_ID;
+	private int m_Score;
+
+	private int m_DocLength;
 
 	public DocumentImpl() {
 		m_Term_2_Position_Map = new HashMap<String, List<Integer>>();
@@ -90,7 +94,7 @@ public class DocumentImpl implements Document {
 		if (m_Metadata.containsKey("BODY"))
 			return (String) m_Metadata.get("BODY");
 		return "";
-		//return getContent(1, m_DocLength);
+		// return getContent(1, m_DocLength);
 	}
 
 	public String getContent(int start, int end) {
@@ -123,19 +127,19 @@ public class DocumentImpl implements Document {
 	// setters
 
 	public void setID(int id) {
-//		MessageDigest digest;
-//		try {
-//			digest = MessageDigest.getInstance("MD5");
-//			digest.update(this.getFilePath().getBytes());
-//			digest.update(id.getBytes());
-//			id = new BigInteger(1, digest.digest()).toString(16);
-//			if (id.length() == 31) {
-//				id = "0" + id;
-//			}
-//		} catch (NoSuchAlgorithmException e) {
-//		}
-//		m_ID = id;
-		
+		// MessageDigest digest;
+		// try {
+		// digest = MessageDigest.getInstance("MD5");
+		// digest.update(this.getFilePath().getBytes());
+		// digest.update(id.getBytes());
+		// id = new BigInteger(1, digest.digest()).toString(16);
+		// if (id.length() == 31) {
+		// id = "0" + id;
+		// }
+		// } catch (NoSuchAlgorithmException e) {
+		// }
+		// m_ID = id;
+
 		this.m_ID = id;
 	}
 
@@ -148,7 +152,7 @@ public class DocumentImpl implements Document {
 	}
 
 	public String getTitle() {
-		return (this.m_Title!=null ? this.m_Title : "");
+		return (this.m_Title != null ? this.m_Title : "");
 	}
 
 	public boolean contains(String term) {
@@ -202,11 +206,39 @@ public class DocumentImpl implements Document {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		};
+		}
 	}
-	
-	public String getSnippet(String term){
+
+	public String getSnippet(String term, Index index) {
+		String[] tokens = index.getPreprocessor().getTokens(term);
+		System.out.println(term);
+		String token, nearToken, snippet = "";
+		ArrayList<Integer> positions, nearPosition;
+		for(int i = 0; i < tokens.length; i++){
+			token = tokens[i];
+			System.out.println(token);
+			if(token != null){
+				positions = (ArrayList<Integer>) this.getTermPositions(token);
+//				for(int j = i+1; j < tokens.length; j++){
+//					nearToken = tokens[j];
+//					if()
+//				}
+				
+				snippet += this.getContent(positions.get(0)-5, m_Term_2_Position_Map.get(token).get(0)+5);
+			}
+			System.out.println(snippet);
+		}
 		
-		return null;
+		return snippet;
+	}
+
+	public int getScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setScore() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -5,10 +5,18 @@ import tudelft.nl.ir.docs.Document;
 import tudelft.nl.ir.index.Posting;
 
 public class InvertedPosting implements Posting{
-
 	private Document m_Document;
 	private List<Integer> m_Positions;
+	private double m_Score;
 	
+	public double getScore() {
+		return m_Score;
+	}
+
+	public void setScore(double mScore) {
+		m_Score = mScore;
+	}
+
 	public InvertedPosting(){
 		this.m_Positions = new ArrayList<Integer>();
 	}
@@ -46,4 +54,11 @@ public class InvertedPosting implements Posting{
 		m_Positions = positions;
 	}
 
+	public int compareTo(Posting o) {
+		double score = (this.getScore() - o.getScore());
+		if( score == 0 ){
+			return 0;
+		}
+		return score<0 ? 1 : -1;
+	}
 }

@@ -9,4 +9,5 @@ public interface Preprocessor {
 	public void addStopwordRemover(StopwordRemover remover);	
 	public void addTermProcessor(TermProcessor processor);
 	public String processToken(String token);
+	public String[] getTokens(String term);
 }

@@ -56,7 +56,7 @@ public class Reuters21578_Importer implements DocImporter {
 			// NEWID contains the document_id that's stored in the database.
 			id = nodes.item(i).getAttributes().getNamedItem("NEWID").getNodeValue();
 			document = new DocumentImpl(filepath, Integer.valueOf(id).intValue());
-
+			
 			children = nodes.item(i).getChildNodes();
 			for (int j = 0; j < children.getLength(); j++) {
 				child = children.item(j);
@@ -148,7 +148,7 @@ public class Reuters21578_Importer implements DocImporter {
 				}
 			}
 		}
-
+		
 		System.out.print("There were " + this.m_docCount + " documents in " + directory.getName() + " folder.\n");
 	}
 

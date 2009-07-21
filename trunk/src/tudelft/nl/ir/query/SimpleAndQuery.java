@@ -1,6 +1,7 @@
 package tudelft.nl.ir.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import tudelft.nl.ir.docs.Document;
 import tudelft.nl.ir.index.Index;
@@ -19,6 +20,8 @@ public class SimpleAndQuery implements Query{
 		this.m_Index = index;		
 		List<Document> results = new ArrayList<Document>();
 		List<Posting> postings = this.intersect();
+
+		Collections.sort(postings);
 		
 		Document doc = null;
 		for (int i = 0; i < postings.size(); i++) {
@@ -56,6 +59,7 @@ public class SimpleAndQuery implements Query{
 		List<Posting> result = new ArrayList<Posting>();
 		for (int i = 0; i < this.m_Terms.length; i++) {
 			termPostings = this.m_Index.getPostings(this.m_Terms[i]);
+			System.out.println(termPostings.size()+" <!-- x");
 			if (termPostings != null && termPostings.size() > 0) {
 				if(result.size()==0){
 					// First time, just add everything.

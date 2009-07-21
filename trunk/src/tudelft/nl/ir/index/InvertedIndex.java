@@ -52,14 +52,23 @@ public class InvertedIndex implements Index {
 		 * Store the document.
 		 */
 		this.m_Storage.addDocument(document);
-		
+
 		/**
 		 * Store the terms.
 		 */
 		this.m_Storage.addMap(map, document);
 	}
-	
-	public DocumentImpl getDocument(String document_id){
+
+	public DocumentImpl getDocument(String document_id) {
 		return this.m_Storage.getDocument(document_id);
 	}
+
+	public Preprocessor getPreprocessor() {
+		return m_Preprocessor;
+	}
+
+	public void setPreprocessor(Preprocessor mPreprocessor) {
+		m_Preprocessor = mPreprocessor;
+	}
+
 }
