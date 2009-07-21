@@ -1,22 +1,12 @@
 package tudelft.nl.ir.gui;
-
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-
 import tudelft.nl.ir.docs.DocumentImpl;
 import tudelft.nl.ir.index.InvertedIndex;
-import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
-import javax.swing.BoxLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import net.miginfocom.swing.MigLayout;
 import java.awt.GridLayout;
 import javax.swing.JScrollPane;
 
@@ -95,6 +85,7 @@ public class IRDocumentFrame extends JFrame {
 		
 		this.m_DocumentId = document_id;
 		this.m_Term = term;
+		System.out.println("xxxx");
 		this.initFrame();
 	}
 	
@@ -103,7 +94,8 @@ public class IRDocumentFrame extends JFrame {
 		InvertedIndex index = new InvertedIndex();
 		DocumentImpl doc = index.getDocument(this.m_DocumentId);
 		this.setTitle(doc.getTitle());
-		doc.getSnippet(this.m_Term);
+		System.out.println("snippet");
+		this.getSnippetTextPane().setText(doc.getSnippet(this.m_Term, index));
 		this.getBodyTextPane().setText(doc.getContent());
 		this.repaint();
 	}

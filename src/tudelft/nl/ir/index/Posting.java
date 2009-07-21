@@ -2,7 +2,7 @@ package tudelft.nl.ir.index;
 
 import tudelft.nl.ir.docs.Document;
 
-public interface Posting {
+public interface Posting extends Comparable<Posting>{
 	
 	// getters
 	
@@ -11,5 +11,6 @@ public interface Posting {
 	// settes
 	
 	public void setDocument(Document document);
-
+	public double getScore();
+	public void setScore(double score);
 }

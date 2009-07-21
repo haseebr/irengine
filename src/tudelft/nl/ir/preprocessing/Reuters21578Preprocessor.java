@@ -90,7 +90,7 @@ public class Reuters21578Preprocessor implements Preprocessor {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Should be retrieving a single token. First the token is processed by the
 	 * punctuation remover and lowercase maker. The we look if the word is a
@@ -122,5 +122,19 @@ public class Reuters21578Preprocessor implements Preprocessor {
 		}
 
 		return token;
+	}
+
+	public String[] getTokens(String term) {
+		String[] tokens = this.m_Tokenizer.tokenize(term);
+		String[] result = new String[tokens.length];
+
+		for (int i = 0, ln = tokens.length; i < ln; i++) {
+			term = this.processToken(tokens[i]);
+			System.out.println(tokens[i]+"->"+term);
+			if (term != null) {
+				result[i] = term;
+			}			
+		}
+		return result;
 	}
 }
