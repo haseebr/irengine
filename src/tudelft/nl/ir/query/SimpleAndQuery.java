@@ -59,7 +59,7 @@ public class SimpleAndQuery implements Query{
 		List<Posting> result = new ArrayList<Posting>();
 		for (int i = 0; i < this.m_Terms.length; i++) {
 			termPostings = this.m_Index.getPostings(this.m_Terms[i]);
-			System.out.println(termPostings.size()+" <!-- x");
+
 			if (termPostings != null && termPostings.size() > 0) {
 				if(result.size()==0){
 					// First time, just add everything.

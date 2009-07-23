@@ -120,7 +120,7 @@ public class IRGui extends JFrame {
 					new Object[][] {
 					},
 					new String[] {
-						"ID", "Document Name", "Snippet"
+						"ID", "Document Name"
 					}
 				);
 				
@@ -139,9 +139,9 @@ public class IRGui extends JFrame {
 				});
 				table.setEnabled(false);
 				table.setModel(model);
-				table.getColumnModel().getColumn(0).setPreferredWidth(50);
-				table.getColumnModel().getColumn(1).setPreferredWidth(209);
-				table.getColumnModel().getColumn(2).setPreferredWidth(330);
+				table.getColumnModel().getColumn(0).setPreferredWidth(10);
+				table.getColumnModel().getColumn(1).setPreferredWidth(400);
+				//table.getColumnModel().getColumn(2).setPreferredWidth(330);
 				scrollPane.setViewportView(table);
 			}
 		}
