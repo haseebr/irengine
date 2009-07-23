@@ -42,8 +42,8 @@ public class IRDocumentFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public IRDocumentFrame(String document_id, String term) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		//setDefaultCloseOperation(JFrame.);
+		setBounds(100, 100, 600, 600);
 		contentPane = new JPanel();
 		contentPane.setLayout(new GridLayout(2, 0, 0, 0));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,7 +85,6 @@ public class IRDocumentFrame extends JFrame {
 		
 		this.m_DocumentId = document_id;
 		this.m_Term = term;
-		System.out.println("xxxx");
 		this.initFrame();
 	}
 	
@@ -94,7 +93,6 @@ public class IRDocumentFrame extends JFrame {
 		InvertedIndex index = new InvertedIndex();
 		DocumentImpl doc = index.getDocument(this.m_DocumentId);
 		this.setTitle(doc.getTitle());
-		System.out.println("snippet");
 		this.getSnippetTextPane().setText(doc.getSnippet(this.m_Term, index));
 		this.getBodyTextPane().setText(doc.getContent());
 		this.repaint();

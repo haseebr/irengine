@@ -3,6 +3,7 @@ package tudelft.nl.ir.docs;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -211,22 +212,38 @@ public class DocumentImpl implements Document {
 
 	public String getSnippet(String term, Index index) {
 		String[] tokens = index.getPreprocessor().getTokens(term);
-		System.out.println(term);
-		String token, nearToken, snippet = "";
-		ArrayList<Integer> positions, nearPosition;
+		String token, snippet = "";
+		ArrayList<Integer> positions = new ArrayList<Integer>();
 		for(int i = 0; i < tokens.length; i++){
 			token = tokens[i];
-			System.out.println(token);
 			if(token != null){
-				positions = (ArrayList<Integer>) this.getTermPositions(token);
-//				for(int j = i+1; j < tokens.length; j++){
-//					nearToken = tokens[j];
-//					if()
-//				}
-				
-				snippet += this.getContent(positions.get(0)-5, m_Term_2_Position_Map.get(token).get(0)+5);
+				positions.addAll(this.getTermPositions(token));
 			}
-			System.out.println(snippet);
+		}
+		
+		Collections.sort(positions);
+		String[] textTokens = index.getPreprocessor().tokenizeText(this.getContent());
+		for(int i = 0, p1, p2, from, to; i < positions.size(); i++){
+			p1 = positions.get(i);
+			from = p1 - 4;
+			to = p1 + 4;
+			for(int j = i; j < positions.size(); j++){
+				p2 = positions.get(j);
+				if(Math.abs(from - p2) == 4 && p2 < from){
+					from = p2 - 4;
+					positions.remove(j--);
+				}else if(Math.abs(to - p2) == 4 && p2 > to){
+					to = p2 + 4;
+					positions.remove(j--);
+				}
+			}
+			
+			from = Math.max(from, 0);
+			to = Math.min(to, textTokens.length);
+			for(;from < to; from++){
+				snippet += textTokens[from] + " ";
+			}
+			snippet += " ...";
 		}
 		
 		return snippet;

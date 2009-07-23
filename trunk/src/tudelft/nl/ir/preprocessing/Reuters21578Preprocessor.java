@@ -137,4 +137,8 @@ public class Reuters21578Preprocessor implements Preprocessor {
 		}
 		return result;
 	}
+
+	public String[] tokenizeText(String text) {
+		return this.m_Tokenizer.tokenize(text);
+	}
 }

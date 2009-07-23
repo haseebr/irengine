@@ -10,4 +10,5 @@ public interface Preprocessor {
 	public void addTermProcessor(TermProcessor processor);
 	public String processToken(String token);
 	public String[] getTokens(String term);
+	public String[] tokenizeText(String text);
 }

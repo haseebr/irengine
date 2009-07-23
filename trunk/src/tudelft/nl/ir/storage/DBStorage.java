@@ -347,7 +347,7 @@ public class DBStorage {
 		} finally {
 			//this.closeConnection();
 		}
-		System.out.println("#term: "+term);
+		
 		InvertedPosting p;
 		for (Map.Entry<Integer, ArrayList<Integer>> entry : map.entrySet()) {
 			document_id = entry.getKey();
@@ -447,8 +447,7 @@ public class DBStorage {
 		Connection conn = this.getConnection();
 		Statement s;
 		ResultSet rs;
-		/*System.out.println("computing:" );
-		System.out.println(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+
 		try {
 			s = conn.createStatement();
 			
@@ -464,8 +463,7 @@ public class DBStorage {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("updated tf!");
-		System.out.println(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+		
 		try {
 			s = conn.createStatement();
 			s.executeQuery(
@@ -486,8 +484,7 @@ public class DBStorage {
 			e.printStackTrace();
 			this.closeConnection();
 		}
-		System.out.println("updated df");*/
-		System.out.println(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+		
 		try {
 			s = conn.createStatement();
 			s.executeQuery("SELECT COUNT(*) as document_cnt FROM reuters_document");
@@ -502,8 +499,7 @@ public class DBStorage {
 			e.printStackTrace();
 			this.closeConnection();
 		}
-		System.out.println("updated tfidf!");
-		System.out.println(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
+
 		this.closeConnection();
 	}
 
